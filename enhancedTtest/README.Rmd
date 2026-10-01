@@ -1,0 +1,751 @@
+# enhancedTtest
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/yourusername/enhancedTtest/workflows/R-CMD-check/badge.svg)](https://github.com/yourusername/enhancedTtest/actions)
+[![CRAN status](https://www.r-pkg.org/badges/version/enhancedTtest)](https://CRAN.R-project.org/package=enhancedTtest)
+[![Downloads](https://cranlogs.r-pkg.org/badges/enhancedTtest)](https://CRAN.R-project.org/package=enhancedTtest)
+[![License: GPL-3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXX)
+<!-- badges: end -->
+
+> **Enhanced T-Test Analysis with Automatic Selection, Assumption Checking, and APA-Formatted Output**
+
+## 🎯 Overview
+
+`enhancedTtest` provides a comprehensive solution for t-test analysis with automatic test selection, comprehensive assumption checking, and publication-ready APA-formatted output. Say goodbye to manual test selection and formatting headaches!
+
+### ✨ Key Features
+
+| Feature | Description |
+|---------|-------------|
+| 🔬 **Complete Test Coverage** | One-sample, two-sample (independent), and paired t-tests |
+| 🤖 **Automatic Selection** | Intelligently chooses parametric or non-parametric tests |
+| ✅ **Assumption Checking** | Automatically tests normality and homogeneity of variance |
+| 📊 **APA Formatting** | Publication-ready tables with proper formatting |
+| 📤 **Export Capabilities** | Export to Word (.docx) and HTML with one line of code |
+| 📈 **Effect Sizes** | Cohen's d, r, with interpretive labels |
+| 📝 **Plain-Language Reporting** | Automatic APA-style interpretations |
+| 🚀 **Batch Analysis** | Analyze multiple variables simultaneously |
+
+### 📋 Supported Tests
+
+| Scenario | Parametric | Non-Parametric |
+|----------|------------|----------------|
+| **One-Sample** | One-sample t-test | Wilcoxon signed-rank test |
+| **Two-Sample (Independent)** | Two-sample t-test (equal variances) | Mann-Whitney U test |
+| **Two-Sample (Unequal Variances)** | Welch's t-test | Mann-Whitney U test |
+| **Paired** | Paired t-test | Wilcoxon signed-rank test (paired) |
+
+---
+
+## 📦 Installation
+
+### From CRAN (Coming Soon)
+```{r}
+install.packages("enhancedTtest")
+```
+
+
+### From GitHub (Development Version)
+
+```{r}
+# Install devtools if you haven't already
+install.packages("devtools")
+
+# Install enhancedTtest
+devtools::install_github("yourusername/enhancedTtest")
+
+```
+
+
+### From Source
+
+```{r}
+# Download the package source
+# Then install locally
+devtools::install("path/to/enhancedTtest")
+```
+
+## 🚀 Quick Start
+
+### Basic Usage
+
+```{r}
+library(enhancedTtest)
+
+# One-Sample T-Test
+result <- complete_ttest(mtcars, mpg ~ 1, mu = 20)
+print(result)
+
+# Two-Sample T-Test
+result <- complete_ttest(iris, Sepal.Length ~ Species)
+print(result)
+
+# Paired T-Test
+result <- complete_ttest(paired_data, value ~ time, paired = TRUE)
+print(result)
+```
+
+### Export to Word
+
+```{r}
+# Export APA-formatted table to Word
+result <- complete_ttest(iris, Sepal.Length ~ Species, 
+                        export_word = TRUE,
+                        filename = "ttest_results.docx")
+```
+
+
+## 📊 Examples
+
+### 1️⃣ One-Sample T-Test
+
+Test if the mean mpg of cars is different from 20:
+
+```{r}
+library(enhancedTtest)
+
+result <- complete_ttest(mtcars, mpg ~ 1, mu = 20)
+
+# View results
+print(result)
+
+# Get APA-style interpretation
+summary(result)
+
+# Access components
+result$method              # "One-sample t-test"
+result$effect_size$value   # Cohen's d
+result$apa_table           # APA-formatted table
+```
+
+
+### 2️⃣ Two-Sample T-Test
+
+Compare Sepal.Length between two species:
+
+```{r}
+# Compare setosa vs versicolor
+iris_subset <- subset(iris, Species %in% c("setosa", "versicolor"))
+result <- complete_ttest(iris_subset, Sepal.Length ~ Species)
+
+print(result)
+```
+
+With Automatic Test Selection:
+
+```{r}
+# Non-normal data triggers non-parametric test
+set.seed(123)
+non_normal_data <- data.frame(
+  value = c(rnorm(30, 10, 2)^2, rnorm(30, 12, 2)^2),
+  group = factor(rep(c("A", "B"), each = 30))
+)
+
+result <- complete_ttest(non_normal_data, value ~ group)
+# Automatically uses Mann-Whitney U test
+print(result)
+```
+
+
+### 3️⃣ Paired T-Test
+
+Before-and-after comparison:
+
+
+```{r}
+# Create paired data
+set.seed(123)
+before <- rnorm(30, 10, 2)
+after <- before + rnorm(30, 1.5, 1)
+
+paired_data <- data.frame(
+  value = c(before, after),
+  time = factor(rep(c("Before", "After"), each = 30))
+)
+
+result <- complete_ttest(paired_data, value ~ time, paired = TRUE)
+print(result)
+
+```
+
+### 4️⃣ Batch Analysis (Multiple Variables)
+
+Analyze multiple variables at once:
+
+```{r}
+# Define formulas for multiple variables
+formulas <- list(
+  Sepal.Length ~ Species,
+  Sepal.Width ~ Species,
+  Petal.Length ~ Species,
+  Petal.Width ~ Species
+)
+
+# Create comprehensive report
+create_complete_report(
+  data = iris,
+  formula_list = formulas,
+  group_var = "Species",
+  title = "Iris Flower Measurements Analysis",
+  filename = "iris_report.docx"
+)
+```
+
+### 5️⃣ Export Options
+
+**Export to Word**
+
+```{r}
+# Method 1: Direct export
+result <- complete_ttest(iris, Sepal.Length ~ Species, 
+                        export_word = TRUE,
+                        filename = "results.docx")
+
+# Method 2: Export existing table
+result <- complete_ttest(iris, Sepal.Length ~ Species)
+export_apa_to_word(result$apa_table, "results.docx")
+
+```
+
+**Export to HTML**
+
+```{r}
+# Export results to HTML
+result <- complete_ttest(iris, Sepal.Length ~ Species)
+export_apa_to_html(result$apa_table, "results.html")
+
+```
+
+**Custom Report Generation**
+
+```{r}
+# Create a complete report with interpretations
+result <- complete_ttest(iris, Sepal.Length ~ Species)
+
+# Generate APA-style interpretation
+interpretation <- generate_apa_interpretation(result)
+cat(interpretation)
+```
+
+## 📋 APA-Formatted Output
+
+The package automatically generates **APA-compliant statistical tables** that are ready for inclusion in research reports, theses, dissertations, journal manuscripts, and other academic documents.
+
+### Example Table Output
+
+| **Statistic**             | **Setosa (n = 50)** | **Versicolor (n = 50)** |     **Result** |
+| ------------------------- | ------------------: | ----------------------: | -------------: |
+| Sample Size (n)           |                  50 |                      50 |              — |
+| Mean (M)                  |                5.01 |                    5.94 |              — |
+| Standard Deviation (SD)   |                0.35 |                    0.52 |              — |
+| Mean Difference           |                   — |                       — |          -0.93 |
+| 95% Confidence Interval   |                   — |                       — | [-1.10, -0.76] |
+| *t*-statistic             |                   — |                       — |         -10.52 |
+| Degrees of Freedom (*df*) |                   — |                       — |          98.00 |
+| *p*-value                 |                   — |                       — |      < .001*** |
+| Effect Size (Cohen's *d*) |                   — |                       — |           2.10 |
+| Effect Interpretation     |                   — |                       — |     Very Large |
+
+## Table Features
+
+* ✅ **APA 7th edition compliant**
+* ✅ **Times New Roman font**
+* ✅ **Proper borders and spacing**
+* ✅ **Significance stars** (*, **, ***)
+* ✅ **Italicized table titles**
+* ✅ **Descriptive footnotes**
+* ✅ **Effect size calculations and interpretations**
+* ✅ **95% confidence intervals**
+* ✅ **Standardized statistical notation**
+* ✅ **Publication-ready formatting**
+
+### Example APA Footnote
+
+> **Note.** *p* < .05, **p* < .01, ***p* < .001. Cohen's *d* values of 0.20, 0.50, and 0.80 represent small, medium, and large effects, respectively.
+
+
+### 🔬 Assumption Checking
+
+The package automatically checks assumptions and selects appropriate tests:
+
+```{r}
+# Check assumptions explicitly
+result <- complete_ttest(iris, Sepal.Length ~ Species)
+print(result$assumptions)
+
+# Output:
+# $normality_passed
+# [1] TRUE
+# 
+# $normality_p_values
+# [1] 0.452 0.789
+# 
+# $variance_passed
+# [1] FALSE
+# 
+# $variance_p_value
+# [1] 0.023
+# 
+# $recommendations
+# [1] "Consider Welch's t-test (doesn't assume equal variances)"
+```
+
+
+### Assumption Tests Performed
+
+The package automatically performs the appropriate assumption checks based on the selected statistical test.
+
+| **Test Type** | **Normality Test**         | **Homogeneity Test** |
+| ------------- | -------------------------- | -------------------- |
+| One-sample    | Shapiro-Wilk               | Not applicable       |
+| Two-sample    | Shapiro-Wilk (per group)   | Levene's test        |
+| Paired        | Shapiro-Wilk (differences) | Not applicable       |
+
+
+## 📊 Effect Sizes
+
+### Cohen's *d* (Parametric Tests)
+
+For parametric *t*-tests, the package automatically calculates **Cohen's *d*** to quantify the magnitude of the observed effect, in addition to reporting statistical significance.
+
+```{r}
+result <- complete_ttest(iris, Sepal.Length ~ Species)
+result$effect_size
+
+# $value
+# [1] 2.10
+# 
+# $name
+# [1] "Cohen's d"
+# 
+# $interpretation
+# [1] "Very Large"
+```
+
+
+| **Effect Size** | **Interpretation** |
+| --------------: | ------------------ |
+|          < 0.2  |	Negligible      
+|            0.20 | Small              |
+|            0.50 | Medium             |
+|            0.80 | Large              |
+|          ≥ 1.20 | Very Large         |
+
+The package reports the effect size alongside the test statistic, *p*-value, and confidence interval so that users can distinguish **statistical significance from practical significance**.
+
+### r (Non-Parametric Tests)
+
+```{r}
+# For non-parametric tests
+result <- complete_ttest(non_normal_data, value ~ group)
+result$effect_size
+
+# $value
+# [1] 0.45
+# 
+# $name
+# [1] "r"
+# 
+# $interpretation
+# [1] "Medium"
+```
+
+| **r Interpretation** | **Interpretation** |
+| -------------------: | ------------------ |
+|                < 0.1 | Negligible         |
+|            0.1 – 0.3 | Small              |
+|            0.3 – 0.5 | Medium             |
+|                > 0.5 | Large              |
+
+
+### Effect Size by Test Type
+
+| **Statistical Test**            | **Effect Size**                           |
+| ------------------------------- | ----------------------------------------- |
+| One-sample *t*-test             | Cohen's *d*                               |
+| Independent two-sample *t*-test | Cohen's *d* / Hedges' *g*                 |
+| Paired *t*-test                 | Cohen's *d* for paired samples            |
+| Mann-Whitney U                  | Rank-biserial correlation / Cliff's delta |
+| Wilcoxon signed-rank            | Rank-biserial correlation                 |
+| ANOVA                           | Eta squared (η²) / Omega squared (ω²)     |
+| Kruskal-Wallis                  | Epsilon squared (ε²)                      |
+| Pearson correlation             | *r*                                       |
+| Spearman correlation            | ρ                                         |
+
+### Why Effect Sizes Matter
+
+A statistically significant result does not necessarily mean that the observed effect is practically important. Therefore, `AutoStatsR` reports an appropriate effect size whenever possible.
+
+For example:
+
+> *t*(98) = -10.52, *p* < .001, Cohen's *d* = 2.10
+
+This tells the user not only that the difference is statistically significant, but also that the magnitude of the difference is **very large**.
+
+
+## 🔬 Assumption-Based Test Selection
+
+The package uses assumption checks as part of its decision-making process rather than simply running a test without evaluating the data.
+
+A simplified decision process is:
+
+```text
+                    Identify Test Design
+                           │
+            ┌──────────────┼──────────────┐
+            │              │              │
+       One-Sample      Two-Sample       Paired
+            │              │              │
+            ▼              ▼              ▼
+      Normality        Normality       Normality
+        Check            Check           Check
+            │              │              │
+            │         Homogeneity        │
+            │            Check            │
+            └──────────────┼──────────────┘
+                           ▼
+                  Evaluate Assumptions
+                           │
+              ┌────────────┴────────────┐
+              │                         │
+        Assumptions Met          Assumptions Violated
+              │                         │
+              ▼                         ▼
+       Parametric Test          Non-Parametric /
+                                 Robust Alternative
+```
+
+### Important Design Principle
+
+`AutoStatsR` should **not automatically switch to a non-parametric test solely because a Shapiro-Wilk test produces a significant result**.
+
+The package should consider the overall evidence, including:
+
+* Sample size
+* Distribution shape
+* Q-Q plot diagnostics
+* Presence of extreme outliers
+* Independence of observations
+* Homogeneity of variance
+* Robustness of the selected parametric test
+* Study design
+
+The final output should explain **why a particular test was selected**, rather than simply reporting the result.
+
+### Example Decision Output
+
+```{text}
+Test Selection
+--------------
+Study design: Independent two-sample comparison
+
+Initial candidate:
+  Independent two-sample t-test
+
+Assumption assessment:
+  Normality: Potential violation
+  Homogeneity: Violated
+  Outliers: None detected
+  Sample sizes: Adequate
+
+Decision:
+  Welch's t-test selected
+
+Reason:
+  The groups show unequal variances. Welch's t-test
+  provides a more appropriate comparison without
+  assuming equal population variances.
+```
+
+This makes `AutoStatsR` more than a statistical calculator—it becomes an **explainable statistical decision-support tool**.
+
+
+## 🛠️ Advanced Usage
+
+### Customizing Test Behavior
+
+`AutoStatsR` provides advanced options that allow users to customize how statistical tests are selected, assumptions are evaluated, and results are reported.
+
+Users can override the package's automatic decisions when they have specific methodological requirements or prior knowledge about their data.
+
+```{r}
+# Specify alternative hypothesis
+result <- complete_ttest(iris, Sepal.Length ~ Species, 
+                        alternative = "greater")
+
+# Force parametric test (skip automatic selection)
+result <- complete_ttest(iris, Sepal.Length ~ Species, 
+                        auto_select = FALSE)
+
+# Custom mu for one-sample test
+result <- complete_ttest(mtcars, mpg ~ 1, mu = 25)
+
+# Custom page orientation
+result <- complete_ttest(iris, Sepal.Length ~ Species,
+                        export_word = TRUE,
+                        orientation = "landscape")
+```
+
+
+**Working with the Results Object**
+
+
+```{r}
+result <- complete_ttest(iris, Sepal.Length ~ Species)
+
+# Access raw test results
+result$raw
+
+# Access descriptive statistics
+result$descriptive_stats
+
+# Access APA table
+result$apa_table
+
+# Access assumption checks
+result$assumptions
+
+# Access effect size
+result$effect_size
+
+# Access method used
+result$method
+
+# Access interpretation
+result$recommendation
+
+```
+
+### **Customizing APA Tables**
+
+```{r}
+# Create custom APA table with notes
+result <- complete_ttest(iris, Sepal.Length ~ Species)
+ft <- create_apa_vertical_table(
+  desc_stats = result$descriptive_stats,
+  raw_result = result$raw,
+  effect_size = result$effect_size$value,
+  var_name = "Sepal.Length",
+  paired = FALSE,
+  table_title = "Table 1. Custom Title Here",
+  notes = "Note. Custom footnote here."
+)
+
+# Export custom table
+export_apa_to_word(ft, "custom_results.docx")
+```
+
+### 📝 APA-Style Interpretation
+
+The package generates plain-language interpretations:
+
+```{r}
+result <- complete_ttest(iris, Sepal.Length ~ Species)
+generate_apa_interpretation(result)
+
+# Output:
+# "An independent-samples t-test was conducted to compare Sepal.Length 
+# scores between setosa and versicolor groups. There was a statistically 
+# significant difference between groups, t(98.00) = -10.52, p < .001, 
+# d = 2.10 (Very Large)."
+```
+
+### 📚 Vignettes
+
+For more detailed examples, check the package vignettes:
+
+```{r}
+# List available vignettes
+vignette(package = "enhancedTtest")
+
+# View a specific vignette
+vignette("getting_started", package = "enhancedTtest")
+vignette("apa_reporting", package = "enhancedTtest")
+vignette("complete_tests", package = "enhancedTtest")
+
+```
+
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our contributing guide.
+
+Development Setup
+
+```{r}
+# Clone the repository
+# git clone https://github.com/yourusername/enhancedTtest.git
+# cd enhancedTtest
+
+# Install development dependencies
+install.packages(c("devtools", "roxygen2", "testthat", "knitr"))
+
+# Install the package
+devtools::install()
+
+# Run tests
+devtools::test()
+
+# Check the package
+devtools::check()
+```
+
+### Code Style
+
+* Follow the [tidyverse style guide](https://style.tidyverse.org/).
+* Use `styler::style_pkg()` to format code consistently.
+* Write **roxygen2** documentation for all exported and internal functions.
+* Add unit tests for all new features and bug fixes.
+* Ensure all tests pass before submitting a pull request.
+* Keep functions focused, readable, and consistent with the existing package architecture.
+
+### Reporting Issues
+
+Please report bugs, unexpected behavior, documentation issues, and feature requests through the [GitHub Issues](https://github.com/yourusername/AutoStatsR/issues) page.
+
+When reporting an issue, please include:
+
+* A clear description of the problem.
+* The expected behavior.
+* The actual behavior.
+* A minimal reproducible example, where possible.
+* The version of `AutoStatsR` being used.
+* Your R version and operating system.
+* Any relevant error messages or warnings.
+
+## 📄 License
+
+This package is licensed under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html).
+
+
+## 📖 Citation
+
+If you use `enhancedTtest` in your research, academic work, publications, or other projects, please cite the package.
+
+### Suggested Citation
+
+```text
+Author(s). (2026). enhancedTtest: Automated statistical test selection,
+assumption checking, and effect-size reporting. R package version 0.1.0.
+https://github.com/yourusername/enhancedTtest
+```
+
+### BibTeX
+
+```{bibtex}
+
+@Manual{enhancedTtest2024,
+  title = {enhancedTtest: Enhanced T-Test Analysis with APA Formatting},
+  author = {Your Name},
+  year = {2024},
+  note = {R package version 0.1.0},
+  url = {https://github.com/yourusername/enhancedTtest}
+}
+}
+```
+
+> **Note:** Replace `Author Name` and `yourusername` with your actual name and GitHub username before publishing the package.
+
+
+## 🙏 Acknowledgments
+
+`AutoStatsR` builds upon the work of many excellent R packages and open-source projects. We gratefully acknowledge the developers and contributors who maintain these tools.
+
+* **stats**: Base R statistical functions and statistical tests
+* **dplyr**: Data manipulation and transformation
+* **flextable**: Publication-ready and APA-formatted tables
+* **officer**: Microsoft Word document generation
+* **car**: Levene's test for homogeneity of variance
+* **testthat**: Unit testing and package quality assurance
+* **ggplot2**: Data visualization and statistical diagnostics
+* **rlang**: Tidy evaluation and programming infrastructure
+* **tibble**: Modern data-frame infrastructure
+
+We also acknowledge the broader **R community** and the open-source contributors whose work makes reproducible statistical analysis possible.
+
+---
+
+## 📞 Support
+
+If you encounter a bug, have a question, or would like to suggest a feature, please use one of the following support channels:
+
+* **GitHub Issues**: [Report bugs or request features](https://github.com/yourusername/AutoStatsR/issues)
+* **Email**: [your.email@example.com](mailto:your.email@example.com)
+* **Website**: https://yourusername.github.io/AutoStatsR/
+
+Before submitting an issue, please check the existing GitHub issues to see whether the problem or feature request has already been reported.
+
+When reporting a bug, providing a **minimal reproducible example** is highly appreciated.
+
+---
+
+## 🔄 Changelog
+
+See [NEWS.md](NEWS.md) for the complete changelog and detailed information about changes between versions.
+
+### Version 0.1.0 — 2026-09-XX
+
+**Initial Release**
+
+#### New Features
+
+* ✅ Complete **t-test family**
+
+  * One-sample *t*-test
+  * Independent two-sample *t*-test
+  * Paired-samples *t*-test
+* ✅ **Automatic statistical test selection**
+* ✅ Automatic consideration of **non-parametric alternatives**
+* ✅ Comprehensive **assumption checking**
+
+  * Shapiro-Wilk normality test
+  * Levene's test for homogeneity of variance
+  * Outlier assessment
+  * Distribution diagnostics
+* ✅ **Welch's *t*-test** for unequal variances
+* ✅ Automatic **effect-size calculations**
+
+  * Cohen's *d*
+  * Hedges' *g*
+  * Rank-based effect sizes where appropriate
+* ✅ **Effect-size interpretation**
+
+  * Negligible
+  * Small
+  * Medium
+  * Large
+  * Very Large
+* ✅ **APA 7th edition-formatted tables**
+* ✅ Statistical significance indicators (*, **, ***)
+* ✅ **95% confidence intervals**
+* ✅ **Word and HTML export**
+* ✅ **Batch analysis** for multiple variables
+* ✅ **Plain-language statistical interpretations**
+* ✅ Explanation of **why a particular test was selected**
+* ✅ Reporting of assumption violations and recommended alternatives
+* ✅ Structured results suitable for programmatic use
+
+### Planned Features
+
+Future releases may include:
+
+* 🔄 One-way ANOVA and repeated-measures ANOVA
+* 🔄 Kruskal-Wallis and Friedman tests
+* 🔄 Pearson and Spearman correlation
+* 🔄 Chi-square tests
+* 🔄 Regression analysis
+* 🔄 Automated diagnostic plots
+* 🔄 PDF report generation
+* 🔄 Enhanced APA manuscript reporting
+* 🔄 Interactive HTML reports
+* 🔄 Expanded clinical and epidemiological statistical methods
+
+---
+
+<div align="center">
+
+⭐ **If you find AutoStatsR useful, please consider starring it on GitHub!** ⭐
+
+</div>
+

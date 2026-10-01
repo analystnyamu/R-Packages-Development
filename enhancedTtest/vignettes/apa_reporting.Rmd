@@ -1,0 +1,30 @@
+---
+title: "Enhanced T-Test Analysis with APA Formatting"
+author: "Your Name"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+    highlight: tango
+vignette: >
+  %\VignetteIndexEntry{Enhanced T-Test Analysis with APA Formatting}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  fig.width = 8,
+  fig.height = 5,
+  out.width = "100%"
+)
+
+# Load packages
+library(enhancedTtest)
+library(flextable)
+library(ggplot2)
+```

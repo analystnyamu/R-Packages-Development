@@ -1,0 +1,35 @@
+Package: enhancedTtest
+Title: Enhanced T-Test with Automatic Selection and APA Formatting
+Version: 0.1.0
+Authors@R: 
+    person(given = "Martin",
+           family = "Nyamu",
+           email = "analystnyamu79@gmail.com",
+           role = c("aut", "cre"))
+Description: Provides enhanced t-test functionality with automatic 
+    assumption checking, non-parametric fallbacks, effect size calculation, 
+    and APA-formatted tables that can be exported to Word documents. Supports 
+    one-sample, two-sample, and paired t-tests with intelligent test selection.
+License: GPL-3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Depends:
+    R (>= 3.5.0)
+Imports:
+    car (>= 3.0-0),
+    dplyr (>= 1.0.0),
+    flextable (>= 0.7.0),
+    htmltools (>= 0.5.0),
+    nortest (>= 1.0-4),
+    officer (>= 0.4.0),
+    rlang (>= 1.0.0),
+    stats,
+    utils
+Suggests:
+    ggplot2,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Config/roxygen2/version: 8.1.0

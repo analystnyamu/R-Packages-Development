@@ -1,0 +1,46 @@
+# Open RStudio
+# File -> Open Project -> enhancedTtest.Rproj
+
+# Then in the R console:
+
+# 1. Set working directory (should be automatic in RStudio)
+# The working directory should be the package root
+# Use forward slashes (works on all platforms)
+setwd("D:/Martin Doc/R PACKAGES/R-Packages-Development/enhancedTtest")
+getwd()  # Should show ".../enhancedTtest"
+
+# Should show: D:/Martin Doc/R PACKAGES/R-Packages-Development/enhancedTtest
+
+# Check for package files
+file.exists("DESCRIPTION")
+# Should be TRUE
+
+file.exists("R")
+# Should be TRUE
+
+# List all files
+list.files()
+# Should show: DESCRIPTION, NAMESPACE, R/, tests/, etc.
+# 2. Load devtools
+
+# Check for .Rproj file
+list.files(pattern = "\\.Rproj$")
+# Should show: "enhancedTtest.Rproj"
+
+# If not, create it:
+if (!any(grepl("\\.Rproj$", list.files()))) {
+  usethis::use_rstudio()
+  cat("✓ Created enhancedTtest.Rproj\n")
+}
+
+# Check what R files you have
+list.files("R", pattern = "\\.R$")
+# Should show your R source files
+
+library(devtools)
+
+# 3. Run tests
+devtools::test()
+
+# 4. Check package
+devtools::check()
