@@ -9,7 +9,10 @@ Authors@R:
 Description: Provides enhanced t-test functionality with automatic 
     assumption checking, non-parametric fallbacks, effect size calculation, 
     and APA-formatted tables that can be exported to Word documents. Supports 
-    one-sample, two-sample, and paired t-tests with intelligent test selection.
+    one-sample, two-sample, and paired t-tests with intelligent test selection. 
+    Effect size interpretations follow Cohen (1988) <doi:10.4324/9780203771587> 
+    and APA formatting follows the Publication Manual of the American 
+    Psychological Association, 7th edition (2020) <doi:10.1037/0000165-000>.
 License: GPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

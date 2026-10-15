@@ -17,7 +17,7 @@ complete_ttest(
 )
 }
 \arguments{
-\item{data}{A data frame containing the variables}
+\item{data}{A data frame containing the variables.}
 
 \item{formula}{A formula specifying the model:
 \itemize{
@@ -26,24 +26,100 @@ complete_ttest(
 \item Paired: \code{response ~ group} with \code{paired = TRUE}
 }}
 
-\item{paired}{Logical, whether to perform a paired t-test (default FALSE)}
+\item{paired}{Logical, whether to perform a paired t-test
+(default \code{FALSE}).}
 
-\item{alternative}{Character, alternative hypothesis: "two.sided" (default),
-"less", or "greater"}
+\item{alternative}{Character string specifying the alternative hypothesis.
+Must be one of \code{"two.sided"} (default), \code{"less"}, or
+\code{"greater"}.}
 
-\item{mu}{Numeric, hypothesized mean for one-sample tests (default 0)}
+\item{mu}{Numeric, the hypothesized mean for one-sample tests
+(default \code{0}). Ignored for two-sample and paired tests.}
 
-\item{auto_select}{Logical, automatically select parametric/non-parametric
-test based on assumption checks (default TRUE)}
+\item{auto_select}{Logical, if \code{TRUE} (default) automatically selects
+a parametric or non-parametric test based on assumption checks
+(normality and homogeneity of variance). If \code{FALSE}, always
+performs the parametric test.}
 
-\item{apa_table}{Logical, create APA-formatted table (default TRUE)}
+\item{apa_table}{Logical, if \code{TRUE} (default) creates an
+APA-formatted \code{flextable} object.}
 
-\item{export_word}{Logical, export results to Word document (default FALSE)}
+\item{export_word}{Logical, if \code{TRUE} exports the APA table to a
+Word document (default \code{FALSE}).}
 
-\item{filename}{Character, output filename for Word export}
+\item{filename}{Character string, output filename for Word export.
+Only used when \code{export_word = TRUE}.}
 }
 \value{
-An object of class \code{complete_ttest}
+An object of class \code{complete_ttest} (also inheriting from
+\code{enhanced_ttest}), which is a named list containing the following
+components:
+
+\describe{
+\item{\code{raw}}{The raw test result object returned by
+\code{\link[stats]{t.test}} or \code{\link[stats]{wilcox.test}}.
+Contains the test statistic, degrees of freedom, p-value, confidence
+interval, and estimates.}
+
+\item{\code{method}}{Character string naming the test performed
+(e.g., \code{"Welch's t-test"}, \code{"Mann-Whitney U test"}).}
+
+\item{\code{parametric}}{Logical; \code{TRUE} if a parametric test was
+used, \code{FALSE} if a non-parametric alternative was selected.}
+
+\item{\code{test_type}}{Character string indicating the test type:
+\code{"one_sample"}, \code{"two_sample"}, or \code{"paired"}.}
+
+\item{\code{response_var}}{Character string with the name of the
+response variable from the formula.}
+
+\item{\code{group_var}}{Character string with the name of the grouping
+variable from the formula, or \code{NULL} for one-sample tests.}
+
+\item{\code{data}}{The processed data frame used in the analysis,
+after removing missing values and converting the grouping variable
+to a factor (if applicable).}
+
+\item{\code{alternative}}{Character string with the alternative
+hypothesis used.}
+
+\item{\code{mu}}{Numeric value of the hypothesized mean
+(for one-sample tests).}
+
+\item{\code{descriptive_stats}}{Data frame with descriptive statistics
+by group (or overall for one-sample tests). Contains columns:
+\code{group}, \code{N}, \code{Mean}, \code{SD}, \code{SE} for
+parametric tests; or \code{group}, \code{N}, \code{Median},
+\code{IQR} for non-parametric tests.}
+
+\item{\code{effect_size}}{A named list describing the effect size
+with elements:
+\itemize{
+\item \code{value}: Numeric effect size value.
+\item \code{name}: Character string, either \code{"Cohen's d"}
+(parametric) or \code{"r"} (non-parametric).
+\item \code{interpretation}: Character string describing the
+magnitude (e.g., \code{"Small"}, \code{"Medium"}, \code{"Large"}).
+}}
+
+\item{\code{assumptions}}{A named list with results of assumption
+checks, including \code{normality_passed}, \code{normality_p_value},
+\code{variance_passed}, \code{variance_p_value}, plus
+\code{warnings} and \code{recommendations} character vectors.}
+
+\item{\code{apa_table}}{A \code{flextable} object containing the
+publication-ready APA-formatted table, or \code{NULL} if
+\code{apa_table = FALSE} or table creation failed.}
+
+\item{\code{recommendation}}{Character string with a plain-language
+summary of the analysis, including the test method used, assumption
+check results, significance, and effect size interpretation.}
+
+\item{\code{call}}{The matched function call, for reproducibility.}
+}
+
+The object has S3 methods \code{\link{print.complete_ttest}} and
+\code{\link{summary.complete_ttest}} for displaying results.
 }
 \description{
 Performs one-sample, two-sample, or paired t-tests with automatic
@@ -53,12 +129,26 @@ APA-formatted output.
 }
 \examples{
 \donttest{
-# One-sample t-test
+# One-sample t-test: test if mean mpg differs from 20
 result <- complete_ttest(mtcars, mpg ~ 1, mu = 20)
+print(result)
 
-# Two-sample t-test
-result <- complete_ttest(iris[iris$Species != "virginica", ],
-                         Sepal.Length ~ Species)
+# Two-sample t-test: compare Sepal.Length between two species
+iris_subset <- iris[iris$Species != "virginica", ]
+iris_subset$Species <- droplevels(iris_subset$Species)
+result <- complete_ttest(iris_subset, Sepal.Length ~ Species)
+summary(result)
+
+# Access components
+result$method          # Test name
+result$raw$p.value     # p-value
+result$effect_size     # Effect size with interpretation
+result$apa_table       # APA-formatted flextable
 }
 
+}
+\seealso{
+\code{\link{create_complete_apa_table}} for building APA tables,
+\code{\link{export_apa_to_word}} for Word export,
+\code{\link{format_p_value}} for formatting p-values.
 }

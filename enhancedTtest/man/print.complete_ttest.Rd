@@ -7,10 +7,55 @@
 \method{print}{complete_ttest}(x, ...)
 }
 \arguments{
-\item{x}{Object of class complete_ttest}
+\item{x}{A \code{complete_ttest} object returned by
+\code{\link{complete_ttest}}.}
 
-\item{...}{Additional arguments}
+\item{...}{Additional arguments passed to \code{print}. Currently
+ignored.}
+}
+\value{
+Invisibly returns the input object \code{x}, unchanged. This function
+is called primarily for its side effect of printing a formatted
+summary of the t-test analysis to the console.
+
+The printed output includes:
+\itemize{
+\item \strong{Test information}: test type (\code{"one_sample"},
+\code{"two_sample"}, or \code{"paired"}), test method name, whether
+a parametric or non-parametric test was used, and the variable names.
+\item \strong{Assumption checks}: results of normality and homogeneity
+of variance tests, plus any recommendations (only shown if
+assumption checks were performed).
+\item \strong{Descriptive statistics}: sample size, mean, standard
+deviation, and standard error by group (or overall for one-sample
+tests). For non-parametric tests, median and interquartile range
+are shown instead.
+\item \strong{Test results}: test statistic, degrees of freedom,
+p-value, and 95\\% confidence interval.
+\item \strong{Effect size}: the effect size value, name
+(Cohen's \emph{d} or \emph{r}), and magnitude interpretation
+(e.g., "Small", "Medium", "Large").
+\item \strong{APA-formatted table}: if \code{x$apa_table} is not
+\code{NULL}, the publication-ready table is printed inline.
+\item \strong{Summary}: a plain-language summary combining the
+method used, assumption results, significance, and effect size.
+}
 }
 \description{
-Print method for complete_ttest objects
+Formats and prints a \code{complete_ttest} object to the console in a
+human-readable format. The output includes the test type, method used,
+assumption check results, descriptive statistics, test statistics,
+effect size, and (if present) the APA-formatted table.
+}
+\examples{
+\donttest{
+result <- complete_ttest(mtcars, mpg ~ 1, mu = 20)
+print(result)
+}
+
+}
+\seealso{
+\code{\link{summary.complete_ttest}} for a condensed summary with an
+APA-style interpretation, \code{\link{complete_ttest}} for the main
+analysis function.
 }

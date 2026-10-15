@@ -2,15 +2,45 @@
 % Please edit documentation in R/print_methods.R
 \name{summary.complete_ttest}
 \alias{summary.complete_ttest}
-\title{Summary method for complete_ttest}
+\title{Summary method for complete_ttest objects}
 \usage{
 \method{summary}{complete_ttest}(object, ...)
 }
 \arguments{
-\item{object}{Object of class complete_ttest}
+\item{object}{A \code{complete_ttest} object returned by
+\code{\link{complete_ttest}}.}
 
-\item{...}{Additional arguments}
+\item{...}{Additional arguments passed to \code{summary}. Currently
+ignored.}
+}
+\value{
+Invisibly returns the input object \code{object}, unchanged. This
+function is called primarily for its side effect of printing a
+detailed summary of the t-test analysis to the console.
+
+The printed output includes everything from
+\code{\link{print.complete_ttest}} plus:
+\itemize{
+\item \strong{APA-style interpretation}: a complete sentence
+describing the test performed, the variables compared, the
+statistical result (with test statistic, degrees of freedom, and
+p-value), and the effect size with its interpretation. This text
+is suitable for direct inclusion in a research report or
+manuscript.
+}
 }
 \description{
-Summary method for complete_ttest
+Provides a condensed summary of a \code{complete_ttest} object,
+including all the information shown by \code{\link{print.complete_ttest}}
+plus a plain-language, APA-style interpretation of the results.
+}
+\examples{
+\donttest{
+result <- complete_ttest(mtcars, mpg ~ 1, mu = 20)
+summary(result)
+}
+
+}
+\seealso{
+\code{\link{print.complete_ttest}}, \code{\link{complete_ttest}}.
 }
